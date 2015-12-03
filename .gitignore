@@ -20,5 +20,5 @@ pom.xml.next
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-
+log4j.properties
 # Created by .ignore support plugin (hsz.mobi)
