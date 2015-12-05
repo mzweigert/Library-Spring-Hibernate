@@ -5,6 +5,11 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "author.all", query = "Select a from Author a"),
+        @NamedQuery(name = "author.bySurname", query = "Select a from Author a where a.surname = :surname")
+})
+@Table(name = "Author")
 public class Author implements Serializable
 {
     @Id
@@ -16,7 +21,8 @@ public class Author implements Serializable
     @Column(nullable = false)
     private String surname;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "Author_Book", joinColumns = {@JoinColumn(name = "idAuthor")}, inverseJoinColumns = {@JoinColumn(name = "idBook")})
     private List<Book> books = null;
 
     public Author()
@@ -26,10 +32,10 @@ public class Author implements Serializable
 
     public Author(String name, String surname)
     {
-        super();
         this.name = name;
         this.surname = surname;
     }
+
     public String getName()
     {
         return name;
@@ -55,7 +61,7 @@ public class Author implements Serializable
         return idAuthor;
     }
 
-    public void setIdAuthor(int idAuthor)
+    public void setIdAuthor(long idAuthor)
     {
         this.idAuthor = idAuthor;
     }

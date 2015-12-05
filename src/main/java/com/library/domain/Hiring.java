@@ -13,17 +13,19 @@ public class Hiring implements Serializable
     private long idHiring;
 
     @ManyToOne
-    @JoinColumn(name="idBook")
+    @JoinColumn(name = "idBook")
     private Book book;
 
     @ManyToOne
-    @JoinColumn(name="idReader")
+    @JoinColumn(name = "idReader")
     private Reader reader;
 
     @Column(nullable = false)
     private Date hireDate;
 
-    public Hiring() {}
+    public Hiring()
+    {
+    }
 
     public Hiring(Book book, Reader reader, Date hireDate)
     {
@@ -53,19 +55,23 @@ public class Hiring implements Serializable
         this.reader = reader;
     }
 
-    public Date getHireDate() {
+    public Date getHireDate()
+    {
         return hireDate;
     }
 
-    public void setHireDate(Date hireDate) {
+    public void setHireDate(Date hireDate)
+    {
         this.hireDate = hireDate;
     }
 
-    public long getIdHiring() {
+    public long getIdHiring()
+    {
         return idHiring;
     }
 
-    public void setIdHiring(int idHiring) {
+    public void setIdHiring(long idHiring)
+    {
         this.idHiring = idHiring;
     }
 

@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.util.List;
 
 @Entity
+@Table(name = "Book")
 public class Book implements Serializable
 {
     @Id
@@ -19,11 +20,10 @@ public class Book implements Serializable
     @Column(nullable = false)
     private int relase;
 
-    @OneToMany
+    @OneToMany(mappedBy = "book")
     private List<Hiring> hirings;
 
-    @ManyToMany
-    @JoinColumn(name = "idAuthor")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "books")
     private List<Author> authors;
 
     public Book()
@@ -74,7 +74,7 @@ public class Book implements Serializable
         return idBook;
     }
 
-    public void setIdBook(int idBook)
+    public void setIdBook(long idBook)
     {
         this.idBook = idBook;
     }

@@ -42,6 +42,7 @@ public class HibernateConfig
 
         BasicDataSource dataSource = new BasicDataSource();
 
+        dataSource.setDefaultAutoCommit(true);
         dataSource.setDriverClassName(DRIVER_CLASS_NAME);
         dataSource.setUrl(URL + DATABASE_NAME);
         dataSource.setUsername(USERNAME);
@@ -55,10 +56,10 @@ public class HibernateConfig
     {
 
         LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(getDataSource());
+        sessionBuilder.setProperty("hibernate.hbm2ddl.auto", "create");
         sessionBuilder.setProperty("hibernate.dialect", DIALECT);
         sessionBuilder.setProperty("hibernate.show_sql", SHOW_SQL);
-
-        sessionBuilder.scanPackages("com.StudShare.domain");
+        sessionBuilder.scanPackages("com.library.domain");
 
         return sessionBuilder.buildSessionFactory();
     }
