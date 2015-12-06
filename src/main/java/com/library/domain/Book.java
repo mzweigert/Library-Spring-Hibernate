@@ -6,6 +6,10 @@ import java.sql.Date;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "book.all", query = "Select b from Book b"),
+        @NamedQuery(name = "book.byTitle", query = "Select b from Book b where b.title = :title")
+})
 @Table(name = "Book")
 public class Book implements Serializable
 {
@@ -20,10 +24,10 @@ public class Book implements Serializable
     @Column(nullable = false)
     private int relase;
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Hiring> hirings;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "books")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "books")
     private List<Author> authors;
 
     public Book()

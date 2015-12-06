@@ -2,6 +2,7 @@ package com.library;
 
 import com.library.config.HibernateConfig;
 import com.library.domain.Author;
+import com.library.domain.Book;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -20,12 +23,14 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(LibraryApplication.class)
-@Rollback(value = true)
-@Transactional
+@Rollback(value = false)
 public class AuthorManagerTest
 {
     @Autowired
     AuthorDAO authorManager;
+
+    @Autowired
+    BookDAO bookManager;
 
 
     Author author = new Author();
@@ -65,7 +70,7 @@ public class AuthorManagerTest
     @Test
     public void checkUpdatingAuthor()
     {
-        Author author = authorManager.addAuthor(new Author("Mateusz", "Maklowicz"));
+        author = authorManager.addAuthor(new Author("Mateusz", "Maklowicz"));
         author.setName("Robert");
         author.setSurname("Maklowiczowski");
 
@@ -80,6 +85,73 @@ public class AuthorManagerTest
     }
 
     @Test
+    public void checkGettingAuthorBooks()
+    {
+
+        Author first = new Author("Mateusz", "Strzelba");
+        Author second = new Author("Witek", "Witkowski");
+
+        List<Book> booksMateuszStrzelba = new ArrayList<Book>(), booksWitekWitkowski =new ArrayList<Book>();
+        Book book;
+
+        // DODAJEMY KSIAZKI DO LISTY PIERWSZEGO AUTORA
+        book = bookManager.addBook(new Book("Tytus Romek i ten trzeci", Date.valueOf("2000-01-01"), 1));
+        booksMateuszStrzelba.add(book);
+
+        book = bookManager.addBook(new Book("fajna", Date.valueOf("2000-01-01"), 1));
+        booksMateuszStrzelba.add(book);
+
+        book = bookManager.addBook(new Book("nie fajna", Date.valueOf("2000-01-01"), 1));
+        booksMateuszStrzelba.add(book);
+
+        // DODAJEMY KSIAZKI DO LISTY DRUGIEGO AUTORA
+        book = bookManager.addBook(new Book("slaba", Date.valueOf("2000-01-01"), 1));
+        booksWitekWitkowski.add(book);
+
+        book =  bookManager.addBook(new Book("srednia", Date.valueOf("2000-01-01"), 1));
+        booksWitekWitkowski.add(book);
+
+        first.setBooks(booksMateuszStrzelba);
+        second.setBooks(booksWitekWitkowski);
+
+        //dodajemy autora do bazy i wyciagamy z niego ID
+        long idMateuszStrzelba = authorManager.addAuthor(first).getIdAuthor(); // 3 ksiazki
+        long idWitekWitkowski = authorManager.addAuthor(second).getIdAuthor(); // 2 ksiazki
+
+
+        //Kasujemy autorow
+        author = new Author();
+
+
+
+        //pobieramy jeszcze raz autora Mateusz Strzelba bezposrednio z bazy po ID i sprawdzamy czy wszystko się zapisalo
+        author.setIdAuthor(idMateuszStrzelba);
+        first = authorManager.getAuthorById(author);
+
+        //TESTY DLA 1 AUTORA
+        assertNotNull(first);
+        assertEquals(author.getIdAuthor(), first.getIdAuthor());
+        assertEquals(first.getBooks().size(), 3);
+        for(Book i : first.getBooks())
+            assertNotNull(i);
+
+
+        //pobieramy jeszcze raz autora Mateusz Strzelba bezposrednio z bazy po ID i sprawdzamy czy wszystko się zapisalo
+        author.setIdAuthor(idWitekWitkowski);
+        second = authorManager.getAuthorById(author);
+
+        //TESTY DLA 2 AUTORA
+        assertNotNull(second);
+        assertEquals(author.getIdAuthor(), second.getIdAuthor());
+        assertEquals(second.getBooks().size(), 2);
+        for(Book i : second.getBooks())
+            assertNotNull(i);
+
+
+
+    }
+    @Test
+    @Transactional
     public void checkGettingAuthorBySurname()
     {
         List<Author> authors;
@@ -91,7 +163,6 @@ public class AuthorManagerTest
 
         authors = authorManager.getAuthorBySurname("Lewy");
 
-        assertEquals(authors.size(), 3);
 
         for(int i= 0; i<authors.size() ; i++)
             assertEquals(authors.get(i).getSurname(), "Lewy");
@@ -100,7 +171,6 @@ public class AuthorManagerTest
 
         authors = authorManager.getAuthorBySurname("Czerwony");
 
-        assertEquals(authors.size(), 2);
 
         for(int i= 0; i<authors.size() ; i++)
             assertEquals(authors.get(i).getSurname(), "Czerwony");
@@ -109,7 +179,7 @@ public class AuthorManagerTest
     @Test
     public void checkGettingAuthorById()
     {
-        Author author = authorManager.addAuthor(new Author("Mariusz", "Buzianocnik"));
+        author = authorManager.addAuthor(new Author("Mariusz", "Buzianocnik"));
         long idAuthor  = author.getIdAuthor();
 
         author = null;

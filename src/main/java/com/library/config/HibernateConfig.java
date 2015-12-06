@@ -56,7 +56,7 @@ public class HibernateConfig
     {
 
         LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(getDataSource());
-        sessionBuilder.setProperty("hibernate.hbm2ddl.auto", "create");
+        sessionBuilder.setProperty("hibernate.hbm2ddl.auto", "update");
         sessionBuilder.setProperty("hibernate.dialect", DIALECT);
         sessionBuilder.setProperty("hibernate.show_sql", SHOW_SQL);
         sessionBuilder.scanPackages("com.library.domain");
