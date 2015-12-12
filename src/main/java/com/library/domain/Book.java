@@ -27,7 +27,7 @@ public class Book implements Serializable
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Hiring> hirings;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "books")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "books")
     private List<Author> authors;
 
     public Book()
@@ -103,5 +103,42 @@ public class Book implements Serializable
         this.authors = authors;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Book{" +
+                "idBook=" + idBook +
+                ", title='" + title + '\'' +
+                ", relaseDate=" + relaseDate +
+                ", relase=" + relase +
+                '}';
+    }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+
+        Book book = (Book) o;
+
+        if (getIdBook() != book.getIdBook()) return false;
+        if (getRelase() != book.getRelase()) return false;
+        if (!getTitle().equals(book.getTitle())) return false;
+        return  (getRelaseDate().equals(book.getRelaseDate()));
+
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (int) (getIdBook() ^ (getIdBook() >>> 32));
+        result = 31 * result + getTitle().hashCode();
+        result = 31 * result + getRelaseDate().hashCode();
+        result = 31 * result + getRelase();
+        result = 31 * result + getHirings().hashCode();
+        result = 31 * result + getAuthors().hashCode();
+        return result;
+    }
 }

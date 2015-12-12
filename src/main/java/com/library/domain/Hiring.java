@@ -75,4 +75,39 @@ public class Hiring implements Serializable
         this.idHiring = idHiring;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Hiring{" +
+                "idHiring=" + idHiring +
+                ", book=" + book +
+                ", reader=" + reader +
+                ", hireDate=" + hireDate +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof Hiring)) return false;
+
+        Hiring hiring = (Hiring) o;
+
+        if (getIdHiring() != hiring.getIdHiring()) return false;
+        if (!getBook().equals(hiring.getBook())) return false;
+        if (!getReader().equals(hiring.getReader())) return false;
+        return getHireDate().equals(hiring.getHireDate());
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (int) (getIdHiring() ^ (getIdHiring() >>> 32));
+        result = 31 * result + getBook().hashCode();
+        result = 31 * result + getReader().hashCode();
+        result = 31 * result + getHireDate().hashCode();
+        return result;
+    }
 }

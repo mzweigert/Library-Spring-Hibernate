@@ -12,6 +12,7 @@ public interface BookDAO
 
     List<Book> getAllBooks();
     Book getBookById(Book book);
+    Book getBookByIdWithAuthors(Book book);
     List<Book> getBookByTitle(String title);
     List<Author> getBookAuthors(Book book);
     List<Reader> getBookReaders(Book book);

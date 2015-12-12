@@ -7,6 +7,7 @@ import com.library.config.HibernateConfig;
 import com.library.domain.Author;
 import com.library.domain.Book;
 import com.library.domain.Reader;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -54,7 +55,10 @@ public class BookManager implements BookDAO
 
     public List<Author> getBookAuthors(Book book)
     {
-        return sessionFactory.getCurrentSession().get(Book.class, book.getIdBook()).getAuthors();
+        Book bookWithAuthors = sessionFactory.getCurrentSession().get(Book.class, book.getIdBook());
+        Hibernate.initialize(bookWithAuthors.getAuthors());
+
+        return bookWithAuthors.getAuthors();
     }
 
     public List<Reader> getBookReaders(Book book)
@@ -67,6 +71,13 @@ public class BookManager implements BookDAO
         return sessionFactory.getCurrentSession().get(Book.class, book.getIdBook());
     }
 
+    public Book getBookByIdWithAuthors(Book book)
+    {
+        Book bookWithAuthors = sessionFactory.getCurrentSession().get(Book.class, book.getIdBook());
+        Hibernate.initialize(bookWithAuthors.getAuthors());
+
+        return bookWithAuthors;
+    }
 
     public List<Book> getBookByTitle(String title)
     {

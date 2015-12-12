@@ -2,25 +2,22 @@ package com.library;
 
 
 import com.library.domain.*;
-import com.library.service.*;
 import org.hibernate.SessionFactory;
-import org.junit.After;
 
-import org.junit.Before;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-
+import static org.hamcrest.CoreMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(LibraryApplication.class)
@@ -59,20 +56,35 @@ public class BookManagerTest
     @Test
     public void checkDeletingBook()
     {
+        List<Book> booksBeforeChecking = bookManager.getAllBooks();
+
         book = bookManager.addBook(new Book("Ksiazeczka fajna bardzo", Date.valueOf("2011-01-02"), 122));
-        bookManager.addBook(new Book("Ksiazeczka fajna bardzo", Date.valueOf("2011-01-02"), 122));
+
 
         int sizeOfAllBooksBeforeDeleting = bookManager.getAllBooks().size();
         bookManager.deleteBook(book);
 
         assertNull(bookManager.getBookById(book));
         assertNotEquals(sizeOfAllBooksBeforeDeleting, bookManager.getAllBooks().size());
+        assertEquals(sizeOfAllBooksBeforeDeleting, bookManager.getAllBooks().size() + 1);
+
+        List<Book> booksAfterChecking = bookManager.getAllBooks();
+
+        for (Book b : booksAfterChecking)
+        {
+            assertTrue(booksBeforeChecking.contains(b));
+        }
+        for (Book b : booksBeforeChecking)
+        {
+            assertTrue(booksAfterChecking.contains(b));
+        }
 
     }
 
     @Test
     public void checkUpdatingBook()
     {
+        List<Book> booksBeforeChecking = bookManager.getAllBooks();
 
         book = bookManager.addBook(new Book("Folwark Zwierzecy", Date.valueOf("1993-03-05"), 155));
 
@@ -87,6 +99,20 @@ public class BookManagerTest
         assertEquals(bookToTest.getTitle(), "1984");
         assertEquals(bookToTest.getRelaseDate(), Date.valueOf("1949-06-08"));
         assertEquals(bookToTest.getRelase(), 5);
+
+        bookManager.deleteBook(bookToTest);
+
+        List<Book> booksAfterChecking = bookManager.getAllBooks();
+
+
+        for (Book b : booksAfterChecking)
+        {
+            assertTrue(booksBeforeChecking.contains(b));
+        }
+        for (Book b : booksBeforeChecking)
+        {
+            assertTrue(booksAfterChecking.contains(b));
+        }
 
     }
 
@@ -139,7 +165,7 @@ public class BookManagerTest
 
 
         long idTytusRomekITenTrzeci = bookManager.getBookById(first).getIdBook(); // 3 autorow
-        long idBlokEkipa =bookManager.getBookById(second).getIdBook(); // 2 ksiazki
+        long idBlokEkipa = bookManager.getBookById(second).getIdBook(); // 2 ksiazki
 
 
         first = new Book();
@@ -148,12 +174,13 @@ public class BookManagerTest
 
         //pobieramy jeszcze raz ksiazke Tytus Romek i ten trzeci bezposrednio z bazy po ID i sprawdzamy czy posiada autorow
         book.setIdBook(idTytusRomekITenTrzeci);
-        first = bookManager.getBookById(book);
+        first = bookManager.getBookByIdWithAuthors(book);
+
 
         //TESTY DLA 1 KSIAZKI
         assertNotNull(first);
         assertEquals(idTytusRomekITenTrzeci, first.getIdBook());
-        assertEquals(first.getAuthors().size(), 3);
+//        assertEquals(first.getAuthors().size(), 3);
         for (Author i : first.getAuthors())
         {
             assertNotNull(i);
@@ -162,7 +189,7 @@ public class BookManagerTest
 
         //pobieramy jeszcze raz ksiazke Blok Ekipa bezposrednio z bazy po ID i sprawdzamy czy posiada autorow
         book.setIdBook(idBlokEkipa);
-        second = bookManager.getBookById(book);
+        second = bookManager.getBookByIdWithAuthors(book);
 
         //TESTY DLA 2 Ksiazki
         assertNotNull(second);

@@ -21,7 +21,7 @@ public class Author implements Serializable
     @Column(nullable = false)
     private String surname;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "Author_Book", joinColumns = {@JoinColumn(name = "idAuthor")}, inverseJoinColumns = {@JoinColumn(name = "idBook")})
     private List<Book> books = null;
 
@@ -74,4 +74,37 @@ public class Author implements Serializable
         this.books = books;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Author{" +
+                "idAuthor=" + idAuthor +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof Author)) return false;
+
+        Author author = (Author) o;
+
+        if (getIdAuthor() != author.getIdAuthor()) return false;
+        if (!getName().equals(author.getName())) return false;
+        return (getSurname().equals(author.getSurname()));
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (int) (getIdAuthor() ^ (getIdAuthor() >>> 32));
+        result = 31 * result + getName().hashCode();
+        result = 31 * result + getSurname().hashCode();
+        result = 31 * result + getBooks().hashCode();
+        return result;
+    }
 }

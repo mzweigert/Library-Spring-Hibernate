@@ -5,6 +5,7 @@ import com.library.AuthorDAO;
 import com.library.config.HibernateConfig;
 import com.library.domain.Author;
 import com.library.domain.Book;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,18 +39,28 @@ public class AuthorManager implements AuthorDAO
     {
         return sessionFactory.getCurrentSession().getNamedQuery("author.all").list();
     }
-    public  List<Book> getAuthorBooks(Author author)
-    {
-       return sessionFactory.getCurrentSession().get(Author.class, author.getIdAuthor()).getBooks();
-    }
     public Author getAuthorById(Author author)
     {
         return sessionFactory.getCurrentSession().get(Author.class, author.getIdAuthor());
     }
+    public Author getAuthorByIdWithBooks(Author author)
+    {
+        Author authorWithBooks = sessionFactory.getCurrentSession().get(Author.class, author.getIdAuthor());
+        Hibernate.initialize(authorWithBooks.getBooks());
 
+        return authorWithBooks;
+
+    }
     public List<Author> getAuthorBySurname(String surname)
     {
         return sessionFactory.getCurrentSession().getNamedQuery("author.bySurname").setString("surname", surname).list();
+    }
+
+    public List<Book> getAuthorBooks(Author author)
+    {
+        Author authorWithBooks = sessionFactory.getCurrentSession().get(Author.class, author.getIdAuthor());
+        Hibernate.initialize(authorWithBooks.getBooks());
+        return authorWithBooks.getBooks();
     }
 
     public Author updateAuthor(Author author)
