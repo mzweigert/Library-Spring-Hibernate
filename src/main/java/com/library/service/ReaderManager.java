@@ -49,7 +49,7 @@ public class ReaderManager implements ReaderDAO
         return sessionFactory.getCurrentSession().getNamedQuery("reader.bySurname").setString("surname", surname).list();
     }
 
-    public Reader getReaderHirings(Reader reader)
+    public Reader getReaderByIdWithHirings(Reader reader)
     {
         Reader readerWithHirings = sessionFactory.getCurrentSession().get(Reader.class, reader.getIdReader());
         Hibernate.initialize(readerWithHirings.getHirings());

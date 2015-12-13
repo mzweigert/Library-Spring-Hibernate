@@ -9,16 +9,15 @@ import java.util.List;
 
 public interface BookDAO
 {
-
+    SessionFactory getSessionFactory();
     List<Book> getAllBooks();
     Book getBookById(Book book);
     Book getBookByIdWithAuthors(Book book);
+    Book getBookByIdWithHirings(Book book);
     List<Book> getBookByTitle(String title);
-    List<Author> getBookAuthors(Book book);
-    List<Reader> getBookReaders(Book book);
     Book updateBook(Book book);
     void deleteBook(Book book);
     Book addBook(Book book);
 
-    SessionFactory getSessionFactory();
+
 }

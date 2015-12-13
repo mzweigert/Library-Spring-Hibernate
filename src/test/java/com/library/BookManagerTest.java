@@ -1,10 +1,9 @@
 package com.library;
 
 
-import com.library.domain.*;
+import com.library.domain.Author;
+import com.library.domain.Book;
 import org.hibernate.SessionFactory;
-
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(LibraryApplication.class)
@@ -117,7 +115,7 @@ public class BookManagerTest
     }
 
     @Test
-    public void checkGettingBookAuthors()
+    public void checkGettingBookByIdWithAuthors()
     {
         Book first = bookManager.addBook(new Book("Tytus Romek i ten trzeci", Date.valueOf("2000-01-01"), 1));
         Book second = bookManager.addBook(new Book("Blok Ekipa", Date.valueOf("2000-01-01"), 1));
@@ -200,7 +198,6 @@ public class BookManagerTest
             assertNotNull(i);
         }
     }
-
     @Test
     public void checkGettingBookByTitle()
     {

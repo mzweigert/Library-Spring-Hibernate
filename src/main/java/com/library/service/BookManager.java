@@ -48,19 +48,6 @@ public class BookManager implements BookDAO
         return sessionFactory.getCurrentSession().getNamedQuery("book.all").list();
     }
 
-    public List<Author> getBookAuthors(Book book)
-    {
-        Book bookWithAuthors = sessionFactory.getCurrentSession().get(Book.class, book.getIdBook());
-        Hibernate.initialize(bookWithAuthors.getAuthors());
-
-        return bookWithAuthors.getAuthors();
-    }
-
-    public List<Reader> getBookReaders(Book book)
-    {
-        return null;
-    }
-
     public Book getBookById(Book book)
     {
         return sessionFactory.getCurrentSession().get(Book.class, book.getIdBook());
@@ -74,10 +61,17 @@ public class BookManager implements BookDAO
         return bookWithAuthors;
     }
 
+    public Book getBookByIdWithHirings(Book book)
+    {
+        Book bookWithHirings = sessionFactory.getCurrentSession().get(Book.class, book.getIdBook());
+        Hibernate.initialize(bookWithHirings.getHirings());
+
+        return bookWithHirings;
+    }
+
     public List<Book> getBookByTitle(String title)
     {
         return sessionFactory.getCurrentSession().getNamedQuery("book.byTitle").setString("title", title).list();
-
     }
 
 
@@ -99,16 +93,5 @@ public class BookManager implements BookDAO
         return book;
     }
 
-   /* public void clearBooks()
-    {
-        try
-        {
-            deleteAllBooksStmt.executeUpdate();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }*/
 
 }

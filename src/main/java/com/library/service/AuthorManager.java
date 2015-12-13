@@ -79,16 +79,6 @@ public class AuthorManager implements AuthorDAO
         author.setIdAuthor(idAuthor);
         return author;
     }
-    /*public void clearAuthors()
-    {
-        try
-        {
-            deleteAllAuthorsStmt.executeUpdate();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }*/
+
 
 }
