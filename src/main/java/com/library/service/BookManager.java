@@ -43,11 +43,6 @@ public class BookManager implements BookDAO
     }
 
 
-    public BookManager()
-    {
-
-    }
-
     public List<Book> getAllBooks()
     {
         return sessionFactory.getCurrentSession().getNamedQuery("book.all").list();

@@ -6,6 +6,11 @@ import java.sql.Date;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "reader.all", query = "Select r from Reader r"),
+        @NamedQuery(name = "reader.bySurname", query = "Select r from Reader r where r.surname = :surname")
+})
+@Table(name = "Reader")
 public class Reader implements Serializable
 {
     @Id
@@ -21,7 +26,7 @@ public class Reader implements Serializable
     @Column(nullable = false)
     private int extraPoints;
 
-    @OneToMany(mappedBy = "reader")
+    @OneToMany(mappedBy = "reader", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Hiring> hirings;
 
     public Reader()
@@ -97,5 +102,33 @@ public class Reader implements Serializable
     public void setHirings(List<Hiring> hirings)
     {
         this.hirings = hirings;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof Reader)) return false;
+
+        Reader reader = (Reader) o;
+
+        if (getIdReader() != reader.getIdReader()) return false;
+        if (getExtraPoints() != reader.getExtraPoints()) return false;
+        if (!getName().equals(reader.getName())) return false;
+        if (!getSurname().equals(reader.getSurname())) return false;
+        return (getJoinDate().equals(reader.getJoinDate()));
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (int) (getIdReader() ^ (getIdReader() >>> 32));
+        result = 31 * result + getName().hashCode();
+        result = 31 * result + getSurname().hashCode();
+        result = 31 * result + getJoinDate().hashCode();
+        result = 31 * result + getExtraPoints();
+        result = 31 * result + (getHirings() != null ? getHirings().hashCode() : 0);
+        return result;
     }
 }
