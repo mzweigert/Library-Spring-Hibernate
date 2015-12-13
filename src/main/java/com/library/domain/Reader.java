@@ -26,7 +26,7 @@ public class Reader implements Serializable
     @Column(nullable = false)
     private int extraPoints;
 
-    @OneToMany(mappedBy = "reader", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "reader")
     private List<Hiring> hirings;
 
     public Reader()

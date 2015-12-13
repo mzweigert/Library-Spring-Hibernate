@@ -3,6 +3,9 @@ package com.library;
 
 import com.library.domain.Author;
 import com.library.domain.Book;
+import com.library.domain.Hiring;
+import com.library.domain.Reader;
+import com.library.service.HiringManager;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +31,11 @@ public class BookManagerTest
     @Autowired
     AuthorDAO authorManager;
 
+    @Autowired
+    ReaderDAO readerManager;
+
+    @Autowired
+    HiringDAO hiringManager;
 
     Book book = new Book();
 
@@ -198,6 +206,7 @@ public class BookManagerTest
             assertNotNull(i);
         }
     }
+
     @Test
     public void checkGettingBookByTitle()
     {
@@ -249,6 +258,32 @@ public class BookManagerTest
         assertEquals(bookFoundById.getTitle(), "Pan Tadeusz");
         assertEquals(bookFoundById.getRelaseDate(), Date.valueOf("2000-05-06"));
         assertEquals(bookFoundById.getRelase(), 155);
+
+    }
+
+    @Test
+    public void checkGettingBookByIdWithHirings()
+    {
+        Reader reader;
+        Hiring hiring;
+
+        book = bookManager.addBook(new Book("Pan Tadeusz", Date.valueOf("2000-05-06"), 155));
+
+        reader = readerManager.addReader(new Reader("Mate", "Zwee",  Date.valueOf("2002-02-16"), 100));
+        hiring = hiringManager.addHiring(new Hiring(book, reader, Date.valueOf("2009-05-03")));
+
+        reader = readerManager.addReader(new Reader("Kamil", "Liwinski",  Date.valueOf("2012-02-13"), 12));
+        Hiring hiring2 = hiringManager.addHiring(new Hiring(book, reader, Date.valueOf("2009-02-03")));
+
+        reader = readerManager.addReader(new Reader("Piotrek", "Piotrkowski",  Date.valueOf("2012-02-13"), 12));
+        Hiring hiring3 = hiringManager.addHiring(new Hiring(book, reader, Date.valueOf("2011-02-03")));
+
+        List<Hiring> bookHirings = bookManager.getBookByIdWithHirings(book).getHirings();
+
+        assertEquals(bookHirings.size(), 3);
+        assertTrue(bookHirings.contains(hiring));
+        assertTrue(bookHirings.contains(hiring2));
+        assertTrue(bookHirings.contains(hiring3));
 
     }
 

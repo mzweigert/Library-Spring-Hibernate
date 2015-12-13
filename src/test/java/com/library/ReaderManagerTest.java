@@ -1,6 +1,8 @@
 package com.library;
 
 
+import com.library.domain.Book;
+import com.library.domain.Hiring;
 import com.library.domain.Reader;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -24,6 +26,12 @@ public class ReaderManagerTest
     @Autowired
     ReaderDAO readerManager;
 
+    @Autowired
+    BookDAO bookManager;
+
+    @Autowired
+    HiringDAO hiringManager;
+
     Reader reader = new Reader();
 
     @Test
@@ -43,7 +51,7 @@ public class ReaderManagerTest
         assertEquals(reader.getName(), "Andrzej");
         assertEquals(reader.getSurname(), "Strzelba");
         assertEquals(reader.getJoinDate(), Date.valueOf("2015-01-01"));
-        assertNotEquals(reader.getIdReader(), 20);
+        assertEquals(reader.getExtraPoints(), 20);
     }
 
     @Test
@@ -158,5 +166,30 @@ public class ReaderManagerTest
         assertEquals(readerFoundById.getSurname(), "Buzianocnik");
     }
 
+    @Test
+    public void checkGettingReaderByIdWithHirings()
+    {
+        Book book;
+        Hiring hiring;
+
+        reader = readerManager.addReader(new Reader("Mate", "Zwee",  Date.valueOf("2002-02-16"), 100));
+
+        book = bookManager.addBook(new Book("Pan Tadeusz", Date.valueOf("2000-05-06"), 155));
+        hiring = hiringManager.addHiring(new Hiring(book, reader, Date.valueOf("2009-05-03")));
+
+        book = bookManager.addBook(new Book("co to sie stanelo", Date.valueOf("2011-03-05"), 125));
+        Hiring hiring2 = hiringManager.addHiring(new Hiring(book, reader, Date.valueOf("2009-02-03")));
+
+        book = bookManager.addBook(new Book("matko boska", Date.valueOf("2006-03-05"), 15));
+        Hiring hiring3 = hiringManager.addHiring(new Hiring(book, reader, Date.valueOf("2011-02-03")));
+
+        List<Hiring> readerHirings = readerManager.getReaderByIdWithHirings(reader).getHirings();
+
+        assertEquals(readerHirings.size(), 3);
+        assertTrue(readerHirings.contains(hiring));
+        assertTrue(readerHirings.contains(hiring2));
+        assertTrue(readerHirings.contains(hiring3));
+
+    }
 
 }
