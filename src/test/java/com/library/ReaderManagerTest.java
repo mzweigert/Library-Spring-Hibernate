@@ -5,6 +5,9 @@ import com.library.domain.Book;
 import com.library.domain.Hiring;
 import com.library.domain.Reader;
 import org.hibernate.SessionFactory;
+
+import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,23 @@ public class ReaderManagerTest
     HiringDAO hiringManager;
 
     Reader reader = new Reader();
+	Reader firstToDelete, secondToDelete, thirdToDelete;
 
+	@Before
+	public void addExamplesReaders()
+	{
+		firstToDelete = readerManager.addReader(new Reader("Andrzej", "Strzelba3", Date.valueOf("2015-01-01"), 20));
+		secondToDelete = readerManager.addReader(new Reader("Andrzej1", "Strzelba2", Date.valueOf("2015-01-01"), 20));
+		thirdToDelete = readerManager.addReader(new Reader("Andrzej4", "Strzelba2", Date.valueOf("2015-01-01"), 20));
+	}
+	@After
+	public void deleteExamplesReaders()
+	{
+		readerManager.deleteReader(firstToDelete);
+		readerManager.deleteReader(secondToDelete);
+		readerManager.deleteReader(thirdToDelete);
+	}
+	
     @Test
     public void checkGettingSessionFactory()
     {

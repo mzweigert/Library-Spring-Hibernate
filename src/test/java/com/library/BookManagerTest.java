@@ -7,6 +7,9 @@ import com.library.domain.Hiring;
 import com.library.domain.Reader;
 import com.library.service.HiringManager;
 import org.hibernate.SessionFactory;
+
+import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,22 @@ public class BookManagerTest
 
     Book book = new Book();
 
+	Book firstToDelete, secondToDelete, thirdToDelete;
+	
+	@Before
+	public void addExamplesBooks()
+	{
+		firstToDelete = bookManager.addBook(new Book("Ferdydurke", Date.valueOf("1969-02-30"), 188));
+		secondToDelete = bookManager.addBook(new Book("Ferdydurke2", Date.valueOf("1969-02-30"), 188));
+		thirdToDelete = bookManager.addBook(new Book("Ferdydurke3", Date.valueOf("1969-02-30"), 188));
+	}
+	@After
+	public void deleteExamplesBooks()
+	{
+		bookManager.deleteBook(firstToDelete);
+		bookManager.deleteBook(secondToDelete);
+		bookManager.deleteBook(thirdToDelete);
+	}
     @Test
     public void checkGettingSessionFactory()
     {

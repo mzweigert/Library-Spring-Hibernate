@@ -44,8 +44,36 @@ public class HiringManagerTest
     Reader reader;
     Hiring hiring;
 
-
-
+	Book firstToDeleteBook, secondToDeleteBook, thirdToDeleteBook;
+	Reader firstToDeleteReader, secondToDeleteReader, thirdToDeleteReader;
+	Hiring firstToDeleteHiring, secondToDeleteHiring, thirdToDeleteHiring;
+	
+	@Before
+	public void addExamplesHirings()
+	{
+		firstToDeleteBook = bookManager.addBook(new Book("Ferdydurke", Date.valueOf("1969-02-30"), 188));
+		firstToDeleteReader = readerManager.addReader(new Reader("Mateusz", "Zweigert", Date.valueOf("2011-01-01"), 11));
+		firstToDeleteHiring = hiringManager.addHiring(new Hiring(firstToDeleteBook, firstToDeleteReader, Date.valueOf("2015-10-12")));
+		
+		secondToDeleteBook = bookManager.addBook(new Book("Ferdydurke2", Date.valueOf("1969-02-30"), 188));
+		secondToDeleteReader = readerManager.addReader(new Reader("Mateusz2", "Zweigert", Date.valueOf("2011-01-01"), 11));
+		secondToDeleteHiring = hiringManager.addHiring(new Hiring(secondToDeleteBook, secondToDeleteReader, Date.valueOf("2015-10-12")));
+		
+		thirdToDeleteBook = bookManager.addBook(new Book("Ferdydurke3", Date.valueOf("1969-02-30"), 188));
+		thirdToDeleteReader = readerManager.addReader(new Reader("Mateusz3", "Zweigert", Date.valueOf("2011-01-01"), 11));
+		thirdToDeleteHiring = hiringManager.addHiring(new Hiring(thirdToDeleteBook, thirdToDeleteReader, Date.valueOf("2015-10-12")));
+		
+		
+	}
+	@After
+	public void deleteExamplesHirings()
+	{
+	
+		hiringManager.deleteHiring(firstToDeleteHiring);
+		hiringManager.deleteHiring(secondToDeleteHiring);
+		hiringManager.deleteHiring(thirdToDeleteHiring);
+	}
+	
     @Test
     public void checkGettingSessionFactory()
     {

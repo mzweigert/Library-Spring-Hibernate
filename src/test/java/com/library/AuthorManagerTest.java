@@ -5,7 +5,8 @@ import com.library.domain.Author;
 import com.library.domain.Book;
 import org.hibernate.SessionFactory;
 
-
+import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,23 @@ public class AuthorManagerTest
 
     Author author = new Author();
 
+	Author firstToDelete, secondToDelete, thirdToDelete;
+	
+	@Before
+	public void addExamplesAuthors()
+	{
+		firstToDelete = authorManager.addAuthor(new Author("Andrzej1", "Strzelba1"));
+		secondToDelete = authorManager.addAuthor(new Author("Andrzej2", "Strzelba2"));
+		thirdToDelete = authorManager.addAuthor(new Author("Andrzej3", "Strzelba3"));
+	}
+	@After
+	public void deleteExamplesAuthors()
+	{
+		authorManager.deleteAuthor(firstToDelete);
+		authorManager.deleteAuthor(secondToDelete);
+		authorManager.deleteAuthor(thirdToDelete);
+	}
+	
     @Test
     public void checkGettingSessionFactory()
     {
